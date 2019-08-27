@@ -114,6 +114,10 @@ class Select extends React.Component {
     clearIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     removeIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     switcherIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+
+    testId: PropTypes.string,
+    testIdExapand: PropTypes.string,
+    testIdItem: PropTypes.string,
   };
 
   static childContextTypes = {
@@ -1004,7 +1008,7 @@ class Select extends React.Component {
       treeNodes,
       filteredTreeNodes,
     } = this.state;
-    const { prefixCls, treeExpandedKeys, onTreeExpand } = this.props;
+    const { prefixCls, treeExpandedKeys, onTreeExpand, testId } = this.props;
     const isMultiple = this.isMultiple();
 
     const passProps = {
@@ -1039,7 +1043,7 @@ class Select extends React.Component {
     );
 
     const Selector = isMultiple ? MultipleSelector : SingleSelector;
-    const $selector = <Selector {...passProps} ref={this.selectorRef} />;
+    const $selector = <Selector {...passProps} id={testId} ref={this.selectorRef} />;
 
     return (
       <SelectTrigger

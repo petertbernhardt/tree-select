@@ -29,6 +29,10 @@ export const selectorPropTypes = {
   ariaId: PropTypes.string,
   inputIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   clearIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+
+  testId: PropTypes.string,
+  testIdExpand: PropTypes.string,
+  textIdItem: PropTypes.string,
 };
 
 export const selectorContextTypes = {
@@ -38,7 +42,7 @@ export const selectorContextTypes = {
   onSelectorClear: PropTypes.func.isRequired,
 };
 
-export default function (modeName) {
+export default function(modeName) {
   class BaseSelector extends React.Component {
     static propTypes = {
       ...selectorPropTypes,
@@ -57,7 +61,7 @@ export default function (modeName) {
 
     static defaultProps = {
       tabIndex: 0,
-    }
+    };
 
     constructor() {
       super();
@@ -67,7 +71,9 @@ export default function (modeName) {
 
     onFocus = (...args) => {
       const { onFocus, focused } = this.props;
-      const { rcTreeSelect: { onSelectorFocus } } = this.context;
+      const {
+        rcTreeSelect: { onSelectorFocus },
+      } = this.context;
 
       if (!focused) {
         onSelectorFocus();
@@ -80,7 +86,9 @@ export default function (modeName) {
 
     onBlur = (...args) => {
       const { onBlur } = this.props;
-      const { rcTreeSelect: { onSelectorBlur } } = this.context;
+      const {
+        rcTreeSelect: { onSelectorBlur },
+      } = this.context;
 
       // TODO: Not trigger when is inner component get focused
       onSelectorBlur();
@@ -92,28 +100,27 @@ export default function (modeName) {
 
     focus = () => {
       this.domRef.current.focus();
-    }
+    };
 
     blur = () => {
       this.domRef.current.focus();
-    }
+    };
 
     renderClear() {
       const { prefixCls, allowClear, selectorValueList, clearIcon } = this.props;
-      const { rcTreeSelect: { onSelectorClear } } = this.context;
+      const {
+        rcTreeSelect: { onSelectorClear },
+      } = this.context;
 
       if (!allowClear || !selectorValueList.length || !selectorValueList[0].value) {
         return null;
       }
 
       return (
-        <span
-          key="clear"
-          className={`${prefixCls}-selection__clear`}
-          onClick={onSelectorClear}
-        >
-          {typeof clearIcon === 'function' ?
-            React.createElement(clearIcon, { ...this.props }) : clearIcon}
+        <span key="clear" className={`${prefixCls}-selection__clear`} onClick={onSelectorClear}>
+          {typeof clearIcon === 'function'
+            ? React.createElement(clearIcon, { ...this.props })
+            : clearIcon}
         </span>
       );
     }
@@ -125,27 +132,33 @@ export default function (modeName) {
       }
 
       return (
-        <span
-          key="arrow"
-          className={`${prefixCls}-arrow`}
-          style={{ outline: 'none' }}
-        >
-          {typeof inputIcon === 'function' ?
-            React.createElement(inputIcon, { ...this.props }) : inputIcon}
+        <span key="arrow" className={`${prefixCls}-arrow`} style={{ outline: 'none' }}>
+          {typeof inputIcon === 'function'
+            ? React.createElement(inputIcon, { ...this.props })
+            : inputIcon}
         </span>
       );
     }
 
     render() {
       const {
-        prefixCls, className, style,
-        open, focused, disabled, allowClear,
+        prefixCls,
+        className,
+        style,
+        open,
+        focused,
+        disabled,
+        allowClear,
         onClick,
         ariaId,
-        renderSelection, renderPlaceholder,
+        renderSelection,
+        renderPlaceholder,
         tabIndex,
+        testId,
       } = this.props;
-      const { rcTreeSelect: { onSelectorKeyDown } } = this.context;
+      const {
+        rcTreeSelect: { onSelectorKeyDown },
+      } = this.context;
 
       let myTabIndex = tabIndex;
       if (disabled) {
@@ -153,46 +166,46 @@ export default function (modeName) {
       }
 
       return (
-        <span
-          style={style}
-          onClick={onClick}
-          className={classNames(
-            className,
-            prefixCls,
-            {
+        <>
+          <h1>I am the base selector!</h1>
+          <span
+            style={style}
+            onClick={onClick}
+            className={classNames(className, prefixCls, {
               [`${prefixCls}-open`]: open,
               [`${prefixCls}-focused`]: open || focused,
               [`${prefixCls}-disabled`]: disabled,
               [`${prefixCls}-enabled`]: !disabled,
               [`${prefixCls}-allow-clear`]: allowClear,
-            }
-          )}
-          ref={this.domRef}
-          role="combobox"
-          aria-expanded={open}
-          aria-owns={open ? ariaId : undefined}
-          aria-controls={open ? ariaId : undefined}
-          aria-haspopup="listbox"
-          aria-disabled={disabled}
-          tabIndex={myTabIndex}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          onKeyDown={onSelectorKeyDown}
-        >
-          <span
-            key="selection"
-            className={classNames(
-              `${prefixCls}-selection`,
-              `${prefixCls}-selection--${modeName}`
-            )}
+            })}
+            ref={this.domRef}
+            role="combobox"
+            aria-expanded={open}
+            aria-owns={open ? ariaId : undefined}
+            aria-controls={open ? ariaId : undefined}
+            aria-haspopup="listbox"
+            aria-disabled={disabled}
+            tabIndex={myTabIndex}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            onKeyDown={onSelectorKeyDown}
+            id={testId}
           >
-            {renderSelection()}
-            {this.renderClear()}
-            {this.renderArrow()}
+            <span
+              key="selection"
+              className={classNames(
+                `${prefixCls}-selection`,
+                `${prefixCls}-selection--${modeName}`,
+              )}
+            >
+              {renderSelection()}
+              {this.renderClear()}
+              {this.renderArrow()}
 
-            {renderPlaceholder && renderPlaceholder()}
+              {renderPlaceholder && renderPlaceholder()}
+            </span>
           </span>
-        </span>
+        </>
       );
     }
   }
